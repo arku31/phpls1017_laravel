@@ -13,10 +13,11 @@
                     @foreach ($errors->all() as $error)
                         <li style="color: red">{{$error}}</li>
                     @endforeach
-                    <form action="/posts/store" method="post">
+                    <form action="/posts/store" method="post" enctype="multipart/form-data">
                         {{csrf_field()}}
                         <input type="text" name="title" class="input-group">
                         <input type="text" name="content" class="input-group">
+                        <input type="file" name="post_image">
                         <input type="submit">
                     </form>
                 </div>

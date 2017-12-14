@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Post;
+use App\Posts\PostCreated;
+use Faker\Provider\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,7 +12,8 @@ class PostController extends Controller
 {
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::with('user')->get();
+        event(new PostCreated($posts));
         $data['posts'] = $posts;
         return view('posts.index', $data);
     }
@@ -25,13 +28,19 @@ class PostController extends Controller
         $this->validate($request, [
             'title' => 'required|min:5',
             'content' => 'required|min:5',
+            'post_image' => 'required|mimes:pdf'
         ]);
 
-        $post = new Post();
-        $post->title = $request->title;
-        $post->content = $request->input('content');
-        $post->user_id = Auth::id();
-        $post->save();
+        $file = $request->file('post_image');
+        $path = public_path('images/') ;
+        $file->move($path, $file->getClientOriginalName());
+        //        $post = Post::storePost($request->title, $request->input('content'));
+
+        $post = Post::create([
+            'title' => $request->title,
+            'content' => $request->input('content'),
+            'user_id' => Auth::id()
+        ]); //Mass assignment
 
         return redirect('posts');
     }

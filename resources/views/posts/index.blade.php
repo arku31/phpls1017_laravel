@@ -12,7 +12,7 @@
                 <div class="panel-body">
                     <ul>
                         @foreach($posts as $post)
-                            <li>{{$post->id}} : {{$post->title}}</li>
+                            <li>{{$post->id}} : {{$post->title}} ||| Author: {{$post->user->name}}</li>
                         @endforeach
                     </ul>
                 </div>
